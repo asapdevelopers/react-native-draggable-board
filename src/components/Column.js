@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  View,
-  ListView
-} from 'react-native';
+import { View, FlatList } from 'react-native';
 
 class Column extends React.Component {
   constructor(props) {
@@ -15,57 +12,57 @@ class Column extends React.Component {
   }
 
   componentWillMount() {
-    this.props.rowRepository.addListener(this.props.column.id(), 'reload', this.reload.bind(this));
+    this.props.rowRepository.addListener(this.props.column.id(), 'reload', this.reload);
   }
 
-  reload() {
+  reload = () => {
     this.setState({ dataSource: this.dataSource() });
   }
 
-  rowHasChanged(item1, item2) {
+  rowHasChanged = (item1, item2) => {
     return item1.row.id !== item2.row.id;
   }
 
-  dataSourceWithItems(items) {
-    const ds = new ListView.DataSource({ rowHasChanged: this.rowHasChanged });
+  dataSourceWithItems = (items) =>  {
+    const ds = new FlatList.DataSource({ rowHasChanged: this.rowHasChanged });
     return ds.cloneWithRows(items);
   }
 
-  dataSource() {
+  dataSource = ()  => {
     let items = this.props.rowRepository.items(this.props.column.id());
     return this.dataSourceWithItems(items);
   }
 
-  onPressIn(item) {
+  onPressIn = (item) =>  {
     let callback = () => {
       this.reload();
     };
     return this.props.onPressIn(this.props.column.id(), item, callback);
   }
 
-  onPress(item) {
+  onPress = (item)  => {
     return this.props.onPress(item);
   }
 
-  setItemRef(item, ref) {
+  setItemRef = (item, ref) =>  {
     this.props.rowRepository.setItemRef(this.props.column.id(), item, ref);
   }
 
-  updateItemWithLayout(item) {
+  updateItemWithLayout = (item)  => {
     return () => {
       this.props.rowRepository.updateItemWithLayout(this.props.column.id(), item);
     }
   }
 
-  setColumnRef(ref) {
+  setColumnRef = (ref) => {
     this.props.rowRepository.setColumnRef(this.props.column.id(), ref);
   }
 
-  updateColumnWithLayout() {
+  updateColumnWithLayout = () => {
     this.props.rowRepository.updateColumnWithLayout(this.props.column.id());
   }
 
-  renderWrapperRow(item) {
+  renderWrapperRow = (item) => {
     let props = {
       onPressIn: this.onPressIn(item),
       onPress: this.onPress(item),
@@ -79,7 +76,7 @@ class Column extends React.Component {
     );
   }
 
-  handleScroll(event) {
+  handleScroll = (event) => {
     // Needed if simple scroll started, without moving mode
 
     this.props.unsubscribeFromMovingMode();
@@ -90,7 +87,7 @@ class Column extends React.Component {
     this.scrollingDown = liveOffset > column.scrollOffset();
   }
 
-  endScrolling(event) {
+  endScrolling = (event) => {
     const currentOffset = event.nativeEvent.contentOffset.y;
     const column = this.props.rowRepository.column(this.props.column.id());
     const scrollingDownEnded = this.scrollingDown && currentOffset >= column.scrollOffset();
@@ -102,27 +99,27 @@ class Column extends React.Component {
     }
   }
 
-  onScrollEndDrag(event) {
+  onScrollEndDrag = (event) => {
     this.endScrolling(event);
   }
 
-  onMomentumScrollEnd(event) {
+  onMomentumScrollEnd = (event) => {
     this.endScrolling(event);
     this.props.onScrollingEnded();
   }
 
-  onContentSizeChange(_, contentHeight) {
+  onContentSizeChange = (_, contentHeight) => {
     this.props.rowRepository.setContentHeight(this.props.column.id(), contentHeight);
   }
 
-  handleChangeVisibleItems(visibleItems) {
+  handleChangeVisibleItems = (visibleItems) => {
     // FYI: This is not invoken on Android.
     // I know it's document, but it just don't work
     // There is product pain and issue for that but they seems to ignore this fact
     this.props.rowRepository.updateItemsVisibility(this.props.column.id(), visibleItems);
   }
 
-  setListView(ref) {
+  setListView = (ref) => {
     this.props.rowRepository.setListView(this.props.column.id(), ref);
   }
 
@@ -130,19 +127,19 @@ class Column extends React.Component {
     return (
       <View
         style={{ flex: 1 }}
-        ref={this.setColumnRef.bind(this)}
-        onLayout={this.updateColumnWithLayout.bind(this)}>
-        <ListView
-          dataSource={this.dataSource()}
-          ref={this.setListView.bind(this)}
-          onScroll={this.handleScroll.bind(this)}
+        ref={this.setColumnRef}
+        onLayout={this.updateColumnWithLayout}>
+        <FlatList
+          data={this.dataSource()}
+          ref={this.setListView }
+          onScroll={this.handleScroll}
           scrollEventThrottle={0}
-          onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
-          onScrollEndDrag={this.onScrollEndDrag.bind(this)}
-          onChangeVisibleRows={this.handleChangeVisibleItems.bind(this)}
-          renderRow={this.renderWrapperRow.bind(this)}
+          onMomentumScrollEnd={this.onMomentumScrollEnd}
+          onScrollEndDrag={this.onScrollEndDrag}
+          onChangeVisibleRows={this.handleChangeVisibleItems}
+          renderItem={this.renderWrapperRow}
           scrollEnabled={!this.props.movingMode}
-          onContentSizeChange={this.onContentSizeChange.bind(this)}
+          onContentSizeChange={this.onContentSizeChange}
           enableEmptySections={true}
          />
       </View>
