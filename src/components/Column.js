@@ -24,8 +24,9 @@ class Column extends React.Component {
   }
 
   dataSourceWithItems = (items) =>  {
-    const ds = new FlatList.DataSource({ rowHasChanged: this.rowHasChanged });
-    return ds.cloneWithRows(items);
+    //const ds = new FlatList.DataSource({ rowHasChanged: this.rowHasChanged });
+    //return ds.cloneWithRows(items);
+    return items;
   }
 
   dataSource = ()  => {
