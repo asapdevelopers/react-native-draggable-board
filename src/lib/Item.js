@@ -1,3 +1,5 @@
+import console = require("console");
+
 class Item {
   constructor(attributes) {
     this._attributes = attributes;
@@ -40,6 +42,7 @@ class Item {
   }
 
   isLocked() {
+    console.log("isLocked")
     return this._attributes.locked;
   }
 
@@ -77,6 +80,7 @@ class Item {
       } else if (this.isVisible() && !layout.x && !layout.y && !layout.width && !layout.height) {
         this.setVisible(false);
       }
+      console.log("measureAndSaveLayout", this)
       if (this.isLocked()) {
         this.setVisible(false);
       }

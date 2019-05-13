@@ -132,13 +132,13 @@ class Column extends React.Component {
         onLayout={this.updateColumnWithLayout}>
         <FlatList
           data={this.dataSource()}
+          renderItem={this.renderWrapperRow}
           ref={this.setListView }
           onScroll={this.handleScroll}
           scrollEventThrottle={0}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
           onScrollEndDrag={this.onScrollEndDrag}
           onChangeVisibleRows={this.handleChangeVisibleItems}
-          renderItem={this.renderWrapperRow}
           scrollEnabled={!this.props.movingMode}
           onContentSizeChange={this.onContentSizeChange}
           enableEmptySections={true}
